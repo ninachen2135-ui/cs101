@@ -52,7 +52,7 @@ int main() {
         return 1;
     }
 
-    // 3. 逐行讀取文件內容並解析
+   
     while (fgets(line_buffer, sizeof(line_buffer), fp) != NULL) {
         // 檢查該行是否包含樂透號碼資訊
         if (strstr(line_buffer, "售出時間: ") != NULL) {
@@ -63,21 +63,14 @@ int main() {
             int numbers[NUM_PER_SET] = {0};
             char temp_num_str[3]; // 用於讀取 "--" 或數字字串
             
-            // 嘗試解析該行： 售出時間: [日期] [年份]: [編號]: [數字...]
-            // 這裡使用 sscanf 解析，需要精確匹配格式
+            
             int scan_count = sscanf(line_buffer, "售出時間: %*s %*d %*d: [%d]: %2s %2s %2s %2s %2s %2s %2s", 
                                     &index, temp_num_str, temp_num_str + 2, temp_num_str + 4, temp_num_str + 6, 
                                     temp_num_str + 8, temp_num_str + 10, temp_num_str + 12);
                                     
-            // 由於 sscanf 解析複雜，我們換一種更穩健的方式：
-            // 找到第一個冒號 ':' 後面的部分，然後繼續解析
             char *start_ptr = strchr(line_buffer, '[');
             if (start_ptr != NULL) {
-                // 從 '[1]: ' 開始解析組號和數字
-                // 重新嘗試使用 sscanf 提取編號和號碼
-                // 格式為：[X]: N1 N2 N3 N4 N5 N6 N7
-                
-                // 提取日期/時間部分以便輸出
+            
                 char date_time_output[70];
                 char *time_start = strstr(line_buffer, "售出時間: ");
                 if (time_start) {
@@ -92,12 +85,12 @@ int main() {
                     }
                 }
 
-                // 從第一個數字開始的位置解析7個號碼
+                
                 char *num_start = strchr(start_ptr, ':');
                 if (num_start) {
                     num_start += 2; // 跳過 ': '
 
-                    // 循環讀取7個號碼
+                    
                     int valid_set = 1;
                     char *current_pos = num_start;
                     
@@ -112,20 +105,20 @@ int main() {
                         strncpy(num_buffer, current_pos, 2);
                         num_buffer[2] = '\0';
 
-                        // 判斷是否為填充的 "--"
+                        
                         if (strcmp(num_buffer, "--") == 0) {
                             valid_set = 0; // 該組為無效填充號碼
                             break; 
                         }
                         
-                        // 轉換為數字
+                      
                         lotto_set[i] = atoi(num_buffer);
                         
-                        // 移動到下一個數字的起始位置 (跳過數字和一個空格)
+                      
                         current_pos += 3; 
                     }
 
-                    // 4. 判斷是否中獎
+             
                     if (valid_set && is_winning(lotto_set, winning_nums, 3)) {
                         // 5. 輸出結果 (只輸出日期/組號和號碼)
                         printf("%s", date_time_output);
@@ -137,10 +130,10 @@ int main() {
                 }
             }
         } 
-        // 忽略文件頭尾和其他無關行
+        
     }
 
-    // 6. 關閉文件
+   
     fclose(fp);
 
     return 0;
