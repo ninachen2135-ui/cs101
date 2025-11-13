@@ -7,7 +7,6 @@
 #define MAX_LOTTO_NUM     7
 #define MAX_LOTTO_NUMSET  5
 
-/* 函式前置宣告 */
 void init_file(void);
 int  get_counter(void);
 void set_counter(int counter);
